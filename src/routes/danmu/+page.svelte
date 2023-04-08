@@ -8,6 +8,8 @@
 	import DanmuMsg from './danmu.svelte'
 	import SuperChatMsg from './superchat.svelte'
 	import GiftMsg from './gift.svelte'
+	import GuardMsg from './guard.svelte'
+
 	import type { GiftsMap } from './+page'
 	export let data: { gifts: GiftsMap }
 	//
@@ -32,6 +34,8 @@
 				<div class="msg">
 					{#if d.type === 'sc'}
 						<SuperChatMsg item={d} />
+					{:else if d.type === 'guard'}
+						<GuardMsg item={d} />
 					{:else if d.type === 'gift'}
 						<GiftMsg gifts={data.gifts} item={d} />
 					{:else if d.type === 'danmu'}

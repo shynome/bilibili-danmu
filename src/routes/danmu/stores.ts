@@ -105,6 +105,21 @@ interface SuperChatMsg {
 	}
 }
 
+interface GuardMsg {
+	cmd: 'GUARD_BUY'
+	data: {
+		end_time: number
+		gift_id: number
+		gift_name: string
+		guard_level: 3
+		num: number
+		price: number
+		start_time: number
+		uid: number
+		username: string
+	}
+}
+
 export function Live(roomid: any) {
 	return readable<KeepLiveWS | null>(null, (set) => {
 		roomid = parseInt(roomid)
@@ -158,7 +173,12 @@ export interface GiftItem extends BaseItem {
 	face: string
 }
 
-type Item = DanmuItem | SuperChatItem | GiftItem
+export interface GuardItem extends BaseItem {
+	type: 'guard'
+	gift: Gift
+}
+
+type Item = DanmuItem | SuperChatItem | GiftItem | GuardItem
 
 export function Danmu(live: Readable<KeepLiveWS | null>) {
 	return derived<[typeof live], Item[]>([live], ([live], set) => {
@@ -171,7 +191,9 @@ export function Danmu(live: Readable<KeepLiveWS | null>) {
 		let handleMsg = (data: any) => {
 			switch (data.cmd) {
 				case 'GUARD_BUY': {
-					console.log(data)
+					// console.log(data)
+					let guard = toGuard(data)
+					danmu.push(guard)
 					break
 				}
 				case 'SEND_GIFT': {
@@ -285,6 +307,21 @@ function toGift({ data }: GiftMsg): GiftItem {
 			value: data.combo_total_coin,
 		},
 		box: box,
+	}
+}
+
+function toGuard({ data }: GuardMsg): GuardItem {
+	return {
+		type: 'guard',
+		nickname: data.username,
+		uid: data.uid,
+		gift: {
+			id: data.gift_id,
+			name: data.gift_name,
+			num: data.num,
+			price: data.price,
+			value: data.price,
+		},
 	}
 }
 

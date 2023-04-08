@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	const GiftValue = (v: number): string => {
+	export const GiftValue = (v: number): string => {
 		return (v / 1e3).toLocaleString(undefined, { minimumFractionDigits: 2 })
 	}
 </script>
